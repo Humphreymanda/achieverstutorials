@@ -1,0 +1,21 @@
+{
+  "name": "Achievers Tutorials",
+  "short_name": "Achievers",
+  "description": "Your gateway to mastering Mathematics & Natural Sciences at CBU.",
+  "start_url": "/browse",
+  "display": "standalone",
+  "background_color": "#f4f7f9",
+  "theme_color": "#001B44",
+  "icons": [
+    {
+      "src": "/assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
