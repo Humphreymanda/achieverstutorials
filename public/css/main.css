@@ -14,6 +14,19 @@
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 20px 40px -10px rgba(0, 27, 68, 0.15);
 }
+/* --- Mobile Locking --- */
+html, body {
+  overscroll-behavior-y: none; /* Stops the rubber-band bounce */
+  touch-action: manipulation; /* Disables double-tap to zoom */
+  -webkit-text-size-adjust: 100%; /* Prevents text resizing on orientation change */
+}
+
+@media (max-width: 768px) {
+  /* Force inputs to be at least 16px to stop iOS from auto-zooming */
+  input, select, textarea, .form-control, .search-input, .hero-search {
+    font-size: 16px !important; 
+  }
+}
 
 body.dark-theme {
   --navy-900: #f8fafc;
