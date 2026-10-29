@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage · achievers tutorials</title>
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+    @media (max-width: 768px) { .admin-grid { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--navy-900); }
+    .form-control { width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; font-family: inherit; font-size: 15px; background: var(--bg-body); color: var(--ink-900); outline: none; }
+    .form-control:focus { border-color: var(--azure-500); box-shadow: 0 0 0 3px var(--azure-glow); }
+    textarea.form-control { resize: vertical; min-height: 120px; }
+    .file-upload { border: 2px dashed var(--line); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-body); }
+    .file-upload:hover { border-color: var(--azure-500); background: rgba(0, 115, 255, 0.05); }
+    .file-upload input { display: none; }
+    .file-upload svg { width: 32px; height: 32px; fill: var(--ink-400); margin-bottom: 12px; }
+    .file-upload p { margin: 0; font-size: 14px; color: var(--ink-600); font-weight: 500; }
+    .preview-img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-top: 16px; display: none; box-shadow: var(--shadow-sm); }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #10b981; color: white; padding: 16px 24px; border-radius: 12px; font-weight: 600; box-shadow: var(--shadow-lg); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <main class="container">
+    <header class="page-header">
+      <h1 class="page-title">Content Manager</h1>
+      <p class="page-subtitle">Secret admin area. Create courses and manage the library.</p>
+    </header>
+
+    <div class="admin-grid">
+      <div class="course-card" style="padding: 32px; cursor: default; box-shadow: var(--shadow-lg);">
+        <h2 style="margin-top: 0; font-size: 22px; color: var(--navy-900); margin-bottom: 24px; font-weight: 800;">Add New Course</h2>
+        
+        <form id="create-course-form">
+          <div class="form-group">
+            <label>Course Title</label>
+            <input type="text" id="c-title" class="form-control" required placeholder="e.g. Introduction to Calculus" />
+          </div>
+          
+          <div class="form-group">
+            <label>Course Code</label>
+            <input type="text" id="c-code" class="form-control" required placeholder="e.g. MAT101" style="text-transform: uppercase;" />
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <select id="c-dept" class="form-control" required>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Biology">Biology</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="c-desc" class="form-control" placeholder="Brief overview of the course..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Cover Image (Thumbnail)</label>
+            <label class="file-upload" id="drop-zone">
+              <input type="file" id="c-image" accept="image/*" required />
+              <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+              <p>Click to upload image</p>
+            </label>
+            <img id="image-preview" class="preview-img" />
+          </div>
+
+          <button type="submit" class="btn-primary" id="submit-btn" style="width: 100%; padding: 16px; border-radius: 10px; font-size: 16px;">
+            Publish Course
+          </button>
+        </form>
+      </div>
+
+      <div class="course-card" style="padding: 32px; cursor: default; background: linear-gradient(135deg, var(--navy-900), #002e73); color: white; border: none;">
+        <h3 style="margin-top: 0; color: white; font-size: 20px; font-weight: 700;">Quick Tips</h3>
+        <ul style="color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.8; padding-left: 20px;">
+          <li>Course codes must be unique (e.g., MAT101).</li>
+          <li>Images should be landscape (16:9 ratio) for best results.</li>
+          <li>Once created, the course is instantly available on the Browse page.</li>
+          <li>This page is hidden at <strong>/manage</strong>. Only you know it exists.</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast">Course published successfully!</div>
+
+  <script src="/env.js"></script>
+  <script type="module">
+    import { initAppLayout } from '/js/app.js';
+    import { supabase } from '/js/supabaseClient.js';
+
+    const layout = await initAppLayout();
+    if (!layout) throw new Error('Not logged in');
+
+    const form = document.getElementById('create-course-form');
+    const fileInput = document.getElementById('c-image');
+    const preview = document.getElementById('image-preview');
+    const dropZone = document.getElementById('drop-zone');
+    const submitBtn = document.getElementById('submit-btn');
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+        dropZone.style.display = 'none';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.textContent = 'Publishing...';
+      submitBtn.disabled = true;
+
+      try {
+        const file = fileInput.files[0];
+        if (!file) throw new Error('Please select an image.');
+
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage.from('thumbnails').upload(fileName, file);
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage.from('thumbnails').getPublicUrl(fileName);
+
+        const payload = {
+          title: document.getElementById('c-title').value,
+          code: document.getElementById('c-code').value.toUpperCase(),
+          department: document.getElementById('c-dept').value,
+          description: document.getElementById('c-desc').value,
+          thumbnail_url: publicUrl
+        };
+
+        const res = await fetch('/api/admin/courses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${layout.session.access_token}` },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to create course');
+
+        document.getElementById('toast').classList.add('show');
+        setTimeout(() => window.location.href = '/browse', 1500);
+
+      } catch (err) {
+        alert(err.message);
+        submitBtn.textContent = 'Publish Course';
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

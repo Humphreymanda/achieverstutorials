@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse · achievers tutorials</title>
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <main class="container">
+    <div class="hero">
+      <div class="hero-content">
+        <div class="live-badge">
+          <div class="pulse-dot"></div>
+          Live Platform
+        </div>
+        <h1 id="greeting-text">Welcome back</h1>
+        <p>Your gateway to mastering Mathematics & Natural Sciences at CBU. Explore courses, watch lessons, and track your progress.</p>
+        <input type="text" id="search" class="hero-search" placeholder="Search by course name or code..." />
+      </div>
+    </div>
+
+    <div id="course-grid" class="course-grid">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+  </main>
+
+  <script src="/env.js"></script>
+  <script type="module">
+    import { initAppLayout } from '/js/app.js';
+    const layout = await initAppLayout();
+    
+    if (layout) {
+      document.getElementById('greeting-text').textContent = `${layout.greeting}, ${layout.firstName}`;
+    }
+
+    const grid = document.getElementById('course-grid');
+    let allCourses = [];
+
+    async function loadCourses() {
+      try {
+        const response = await fetch('/api/courses');
+        if (!response.ok) throw new Error('Failed');
+        allCourses = await response.json();
+        renderCourses(allCourses);
+      } catch (err) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3>Connection Error</h3><p>Please refresh the page.</p></div>`;
+      }
+    }
+
+    function renderCourses(courses) {
+      if (courses.length === 0) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-icon">🚀</div>
+          <h3>No courses available yet</h3>
+          <p>The admin is currently uploading new content. Check back soon!</p>
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = courses.map((course, index) => `
+        <a href="/course/${course.id}" class="course-card" style="animation-delay: ${index * 0.05}s">
+          <div class="card-img" style="background-image: url('${course.thumbnail_url || ''}')">
+            <div class="card-badge">New</div>
+          </div>
+          <div class="card-content">
+            <div class="card-code">${course.code}</div>
+            <h3 class="card-title">${course.title}</h3>
+            <p class="card-desc">${course.description || 'No description available.'}</p>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    document.getElementById('search').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allCourses.filter(c => 
+        c.title.toLowerCase().includes(term) || c.code.toLowerCase().includes(term)
+      );
+      renderCourses(filtered);
+    });
+
+    loadCourses();
+  </script>
+</body>
+</html>

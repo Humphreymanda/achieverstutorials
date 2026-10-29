@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Courses · achievers tutorials</title>
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <main class="container">
+    <header class="page-header">
+      <h1 class="page-title">My Learning</h1>
+      <p class="page-subtitle">Pick up right where you left off.</p>
+    </header>
+
+    <div class="empty-state">
+      <div class="empty-icon">🎓</div>
+      <h3>You haven't enrolled in any courses</h3>
+      <p>Explore the library and start learning something new today.</p>
+      <a href="/browse" class="btn-primary">Browse Courses</a>
+    </div>
+  </main>
+
+  <script src="/env.js"></script>
+  <script type="module">
+    import { initAppLayout } from '/js/app.js';
+    await initAppLayout();
+  </script>
+</body>
+</html>

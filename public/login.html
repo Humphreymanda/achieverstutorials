@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in · achievers tutorials</title>
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/auth.css" />
+</head>
+<body>
+  <main class="auth-shell">
+    <div class="auth-card">
+      <div class="brand">
+        <!-- Ensure your logo is saved at this exact path -->
+        <img src="/assets/logo.png" alt="achievers tutorials" class="brand-img" />
+        <div class="brand-tag">Learn • Practice • Succeed</div>
+      </div>
+
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to access your courses.</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@student.cbu.ac.zm" />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Your password" />
+        </div>
+        <div class="form-error" role="alert" hidden></div>
+        <button class="btn-primary" type="submit">
+          <span class="btn-label">Sign in</span>
+          <span class="btn-spinner" hidden></span>
+        </button>
+      </form>
+
+      <p class="auth-footer">
+        Don't have an account? <a href="/signup">Create one</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="/env.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+</body>
+</html>
